@@ -18,7 +18,7 @@
 - `input_handler.py` (teclado)
 - `packaging/` (script para Itch.io/Steam)
 
-`main.py` se escribe **juntos** el día 1 (game loop mínimo) y casi no se vuelve a tocar.^
+`main.py` se escribe **juntos** el día 1 (game loop mínimo) y casi no se vuelve a tocar.
 
 ---
 
