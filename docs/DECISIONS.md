@@ -12,4 +12,4 @@
 
 * `idFantasma: int`
 >> Recuerda cuando hablamos de esta pieza en el diagrama: dijimos "identificador de qué fantasma es (0-3), si vas a diferenciar comportamientos tipo Blinky/Pinky/Inky/Clyde". Es decir, idFantasma debería ser simplemente un número (int, 0 a 3) que identifica cuál de los 4 fantasmas es — no un tipo llamado "comportamiento". El comportamiento en sí (cómo persigue, qué target elige) es lógica dentro de proxMovimiento(), no un dato que se guarde como atributo con ese tipo.
-* `proxMovimiento(posJugador: tuple(int,int)) -> Direction` calcula hacia dónde se mueve el fantasma según su modoActual. 
+* `proxMovimiento(posJugador: tuple(int,int)) -> Direction` calcula hacia dónde se mueve el fantasma según su modoActual.

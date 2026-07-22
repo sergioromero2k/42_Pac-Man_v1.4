@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PAC-MAN PROTOCOL // Plan de Misión — 20 Días</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0a0c;
+    --panel:#131317;
+    --panel-2:#1a1a1f;
+    --steel:#2c2d33;
+    --steel-soft:#202126;
+    --red:#ff3b2f;        /* Blinky — Persona A / Core */
+    --red-dim:#5c1712;
+    --cyan:#33d6ff;        /* Inky — Persona B / UI */
+    --cyan-dim:#0d3a45;
+    --amber:#ffb800;       /* señal / checkpoint / sync */
+    --pac:#ffe000;         /* Pac-Man yellow — acentos críticos */
+    --text:#e9e6da;
+    --text-dim:#8d8d94;
+    --text-dimmer:#5c5c62;
+    --radius:2px;
+    --display:'Bebas Neue', sans-serif;
+    --mono:'Share Tech Mono', monospace;
+    --ui:'Chakra Petch', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(255,59,47,.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 90% 10%, rgba(51,214,255,.08), transparent 55%),
+      var(--void);
+    color:var(--text);
+    font-family:var(--ui);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* ===== scanline / grid texture ===== */
+  .grid-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size:42px 42px;
+    mask-image:radial-gradient(ellipse 100% 60% at 50% 0%, black, transparent 75%);
+  }
+
+  a{color:inherit;}
+  ::selection{background:var(--red); color:var(--void);}
+
+  :focus-visible{
+    outline:2px solid var(--pac);
+    outline-offset:3px;
+  }
+
+  h1,h2,h3,.num{font-family:var(--display); letter-spacing:.02em;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,10,12,.88);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--steel);
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:14px 24px; gap:16px; flex-wrap:wrap;}
+  .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-size:1.3rem; letter-spacing:.06em;}
+  .brand .dot{width:9px; height:9px; background:var(--red); box-shadow:0 0 10px var(--red); animation:blink 2.4s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .navlinks{display:flex; gap:22px; font-family:var(--mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;}
+  .navlinks a{text-decoration:none; color:var(--text-dim); transition:color .15s;}
+  .navlinks a:hover{color:var(--pac);}
+
+  /* ===== HERO ===== */
+  header.hero{padding:70px 0 40px; position:relative;}
+  .eyebrow{
+    font-family:var(--mono); font-size:.75rem; letter-spacing:.35em; text-transform:uppercase;
+    color:var(--red); margin:0 0 18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:26px; height:2px; background:var(--red);}
+  h1.title{
+    font-size:clamp(2.8rem, 8vw, 5.6rem);
+    margin:0 0 6px; line-height:.92; color:var(--text);
+    text-shadow:0 0 30px rgba(255,59,47,.25);
+  }
+  h1.title span{color:var(--pac);}
+  .subtitle{
+    font-family:var(--mono); color:var(--text-dim); font-size:1rem; max-width:640px; margin:14px 0 40px;
+  }
+
+  /* HUD status bar — signature element */
+  .hud{
+    display:grid; grid-template-columns:1fr auto 1fr; gap:0;
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--steel);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 20px 60px -25px rgba(0,0,0,.8);
+  }
+  .hud-side{padding:20px 24px; display:flex; flex-direction:column; gap:8px;}
+  .hud-side.a{border-right:1px solid var(--steel);}
+  .hud-tag{font-family:var(--mono); font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--text-dimmer);}
+  .hud-name{font-family:var(--display); font-size:1.5rem; letter-spacing:.04em;}
+  .hud-side.a .hud-name{color:var(--red);}
+  .hud-side.b .hud-name{color:var(--cyan);}
+  .barmeter{height:9px; background:var(--void); border:1px solid var(--steel); position:relative; overflow:hidden;}
+  .barmeter i{display:block; height:100%; width:100%;}
+  .hud-side.a .barmeter i{background:repeating-linear-gradient(90deg, var(--red), var(--red) 8px, #7a1a13 8px, #7a1a13 10px);}
+  .hud-side.b .barmeter i{background:repeating-linear-gradient(90deg, var(--cyan), var(--cyan) 8px, #0f4a58 8px, #0f4a58 10px);}
+  .hud-files{font-family:var(--mono); font-size:.72rem; color:var(--text-dim);}
+  .hud-center{
+    padding:16px 30px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border-left:1px solid var(--steel); border-right:1px solid var(--steel);
+    background:rgba(255,184,0,.03);
+  }
+  .hud-days{font-family:var(--display); font-size:3.4rem; color:var(--pac); line-height:1; text-shadow:0 0 24px rgba(255,224,0,.35);}
+  .hud-center .hud-tag{margin-top:4px;}
+
+  /* ===== SECTION shell ===== */
+  section{padding:64px 0;}
+  .sec-head{margin-bottom:34px;}
+  .sec-num{font-family:var(--mono); color:var(--text-dimmer); font-size:.75rem; letter-spacing:.2em;}
+  h2.sec-title{font-size:clamp(1.9rem,4vw,2.6rem); margin:4px 0 10px;}
+  .sec-desc{color:var(--text-dim); max-width:620px; font-size:.95rem;}
+  hr.div{border:none; border-top:1px solid var(--steel); margin:0;}
+
+  /* ===== SQUAD cards ===== */
+  .squad{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media (max-width:760px){.squad{grid-template-columns:1fr;}}
+  .hero-card{
+    background:var(--panel); border:1px solid var(--steel); padding:26px 26px 22px; position:relative; overflow:hidden;
+  }
+  .hero-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px;}
+  .hero-card.a::before{background:linear-gradient(90deg, var(--red), transparent);}
+  .hero-card.b::before{background:linear-gradient(90deg, var(--cyan), transparent);}
+  .hero-card .role{font-family:var(--mono); font-size:.7rem; letter-spacing:.2em; text-transform:uppercase; color:var(--text-dimmer);}
+  .hero-card h3{font-size:1.9rem; margin:4px 0 14px;}
+  .hero-card.a h3{color:var(--red);}
+  .hero-card.b h3{color:var(--cyan);}
+  .filelist{list-style:none; margin:0; padding:0; font-family:var(--mono); font-size:.82rem;}
+  .filelist li{padding:7px 0; border-top:1px dashed var(--steel-soft); display:flex; gap:10px; color:var(--text-dim);}
+  .filelist li:first-child{border-top:none;}
+  .filelist code{color:var(--text); background:var(--panel-2); padding:1px 6px; border:1px solid var(--steel-soft); border-radius:var(--radius); white-space:nowrap;}
+
+  .note-strip{
+    margin-top:22px; font-family:var(--mono); font-size:.8rem; color:var(--amber);
+    border:1px solid var(--amber); background:rgba(255,184,0,.06); padding:12px 16px;
+  }
+
+  /* ===== GIT PROTOCOL ===== */
+  .git-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:24px;}
+  @media (max-width:820px){.git-grid{grid-template-columns:1fr;}}
+  .tree{
+    background:var(--panel); border:1px solid var(--steel); padding:20px 22px; font-family:var(--mono); font-size:.82rem;
+    overflow-x:auto; white-space:pre; color:var(--text-dim);
+  }
+  .tree .l1{color:var(--pac);}
+  .tree .l2{color:var(--text);}
+  .tree .a{color:var(--red);}
+  .tree .b{color:var(--cyan);}
+
+  .rules{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px;}
+  .rules li{
+    background:var(--panel); border:1px solid var(--steel); border-left:3px solid var(--steel);
+    padding:12px 16px; font-size:.88rem; color:var(--text-dim);
+  }
+  .rules li b{color:var(--text); font-weight:600;}
+  .rules li.warn{border-left-color:var(--amber); color:#e8d9b0;}
+
+  .term{
+    background:#0d0f10; border:1px solid var(--steel); margin-top:20px;
+    font-family:var(--mono); font-size:.78rem; color:#8fef9f;
+  }
+  .term .term-bar{
+    background:var(--panel-2); padding:8px 14px; display:flex; gap:6px; align-items:center; border-bottom:1px solid var(--steel);
+  }
+  .term .term-bar span{width:9px; height:9px; border-radius:50%; background:var(--steel);}
+  .term .term-bar b{margin-left:8px; color:var(--text-dimmer); font-weight:400; letter-spacing:.1em; font-size:.68rem;}
+  .term pre{margin:0; padding:16px 18px; overflow-x:auto; line-height:1.7;}
+  .term .cmt{color:var(--text-dimmer);}
+  .term .cmd{color:#fff;}
+
+  .steps{counter-reset:step; list-style:none; margin:20px 0 0; padding:0; display:grid; gap:10px;}
+  .steps li{
+    counter-increment:step; position:relative; padding:12px 16px 12px 52px; background:var(--panel);
+    border:1px solid var(--steel); font-size:.86rem; color:var(--text-dim);
+  }
+  .steps li::before{
+    content:counter(step); position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-family:var(--display); font-size:1.3rem; color:var(--red); width:26px; text-align:center;
+  }
+
+  /* ===== TIMELINE / DAYS ===== */
+  .phase-label{
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.25em; text-transform:uppercase;
+    color:var(--pac); margin:30px 0 14px; display:flex; align-items:center; gap:10px;
+  }
+  .phase-label::after{content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--steel), transparent);}
+  .phase-label:first-child{margin-top:0;}
+
+  details.day{
+    background:var(--panel); border:1px solid var(--steel); margin-bottom:8px; position:relative;
+  }
+  details.day[open]{border-color:#45464d;}
+  details.day > summary{
+    list-style:none; cursor:pointer; padding:16px 20px; display:flex; align-items:center; gap:16px;
+    font-family:var(--ui);
+  }
+  details.day > summary::-webkit-details-marker{display:none;}
+  details.day > summary::after{
+    content:'+'; margin-left:auto; font-family:var(--display); font-size:1.4rem; color:var(--text-dimmer);
+    transition:transform .18s;
+  }
+  details.day[open] > summary::after{content:'–'; color:var(--pac);}
+  .day-num{
+    font-family:var(--display); font-size:1.6rem; color:var(--text-dimmer); min-width:64px;
+  }
+  details.day.joint .day-num, details.day.check .day-num{color:var(--amber);}
+  .day-title{font-weight:600; font-size:.98rem;}
+  .day-flags{display:flex; gap:6px; flex-wrap:wrap;}
+  .flag{font-family:var(--mono); font-size:.62rem; letter-spacing:.1em; padding:3px 7px; border:1px solid var(--steel); color:var(--text-dimmer); text-transform:uppercase;}
+  .flag.sync{color:var(--amber); border-color:var(--amber);}
+  .flag.check{color:var(--pac); border-color:var(--pac);}
+
+  .day-body{padding:0 20px 22px; display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:700px){.day-body{grid-template-columns:1fr;}}
+  .task-col{border-left:2px solid var(--steel); padding-left:14px;}
+  .task-col.a{border-color:var(--red);}
+  .task-col.b{border-color:var(--cyan);}
+  .task-col .who{font-family:var(--mono); font-size:.68rem; letter-spacing:.15em; text-transform:uppercase; margin-bottom:6px;}
+  .task-col.a .who{color:var(--red);}
+  .task-col.b .who{color:var(--cyan);}
+  .task-col p{margin:0 0 8px; font-size:.86rem; color:var(--text-dim);}
+  .theory{font-family:var(--mono); font-size:.72rem; color:var(--text-dimmer);}
+  .theory b{color:var(--text-dim); font-weight:400;}
+  .day-body .full{grid-column:1/-1;}
+  .sync-box{
+    grid-column:1/-1; background:rgba(255,184,0,.06); border:1px solid var(--amber); padding:10px 14px;
+    font-family:var(--mono); font-size:.78rem; color:#e8d9b0;
+  }
+
+  /* ===== TACTICS ===== */
+  .tactics{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  @media (max-width:900px){.tactics{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.tactics{grid-template-columns:1fr;}}
+  .tac-card{background:var(--panel); border:1px solid var(--steel); padding:20px; min-height:150px; display:flex; flex-direction:column; gap:8px;}
+  .tac-card .ic{font-family:var(--display); font-size:1.8rem; color:var(--red);}
+  .tac-card h4{margin:0; font-size:1.02rem;}
+  .tac-card p{margin:0; font-size:.82rem; color:var(--text-dim);}
+
+  /* ===== CHECKPOINTS ===== */
+  .checklist{list-style:none; margin:0; padding:0; display:grid; gap:10px;}
+  .checklist li{
+    display:flex; gap:12px; align-items:flex-start; background:var(--panel); border:1px solid var(--steel);
+    padding:12px 16px; font-size:.87rem; color:var(--text-dim);
+  }
+  .checklist li::before{content:'▸'; color:var(--pac); font-family:var(--display); font-size:1.1rem; line-height:1;}
+  .checklist li b{color:var(--text);}
+
+  .risk-table{width:100%; border-collapse:collapse; font-size:.85rem; margin-top:10px;}
+  .risk-table th{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-dimmer);
+    text-align:left; padding:10px 14px; border-bottom:1px solid var(--steel);
+  }
+  .risk-table td{padding:12px 14px; border-bottom:1px solid var(--steel-soft); color:var(--text-dim); vertical-align:top;}
+  .risk-table tr:hover td{background:rgba(255,255,255,.015);}
+  .sev{font-family:var(--mono); font-size:.7rem; padding:2px 8px; border:1px solid; white-space:nowrap;}
+  .sev.high{color:var(--red); border-color:var(--red);}
+  .sev.mid{color:var(--amber); border-color:var(--amber);}
+
+  footer{padding:50px 0 70px; text-align:center;}
+  footer .foot-line{font-family:var(--mono); font-size:.72rem; color:var(--text-dimmer); letter-spacing:.15em;}
+  footer .foot-line b{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> PAC-MAN PROTOCOL</div>
+    <div class="navlinks">
+      <a href="#equipo">Equipo</a>
+      <a href="#git">Git</a>
+      <a href="#mision">Misión</a>
+      <a href="#tacticas">Tácticas</a>
+      <a href="#riesgos">Riesgos</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">42 · Proyecto Pac-Man · Waka-waka</p>
+    <h1 class="title">PLAN DE<br>MISIÓN <span>20 DÍAS</span></h1>
+    <p class="subtitle">Documento operativo para el desarrollo en pareja de Pac-Man (Python + OOP + MLX). Orientativo — no es un dogma, es un mapa para no perderos en el laberinto.</p>
+
+    <div class="hud">
+      <div class="hud-side a">
+        <span class="hud-tag">Héroe 01 · Persona A</span>
+        <span class="hud-name">CORE / LÓGICA</span>
+        <div class="barmeter"><i></i></div>
+        <span class="hud-files">config · maze_loader · player · ghost · game_state · highscore · cheat</span>
+      </div>
+      <div class="hud-center">
+        <span class="hud-days">20</span>
+        <span class="hud-tag">Días de misión</span>
+      </div>
+      <div class="hud-side b">
+        <span class="hud-tag">Héroe 02 · Persona B</span>
+        <span class="hud-name">UI / RENDER</span>
+        <div class="barmeter"><i></i></div>
+        <span class="hud-files">renderer · menu · hud · pause · game_over · input · packaging</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="equipo">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="sec-num">01 — REPARTO DE MÓDULOS</p>
+      <h2 class="sec-title">El escuadrón</h2>
+      <p class="sec-desc">División de archivos para que nadie pise el terreno del otro. <code>main.py</code> se escribe <b>juntos</b> el Día 1 (game loop mínimo) y casi no se vuelve a tocar.</p>
+    </div>
+
+    <div class="squad">
+      <div class="hero-card a">
+        <span class="role">Persona A</span>
+        <h3>Core / Lógica</h3>
+        <ul class="filelist">
+          <li><code>config.py</code> parser JSON + comentarios, validación, defaults</li>
+          <li><code>maze_loader.py</code> adaptador al paquete A‑Maze‑ing</li>
+          <li><code>models/player.py</code></li>
+          <li><code>models/ghost.py</code></li>
+          <li><code>models/pacgum.py</code></li>
+          <li><code>models/entities.py</code></li>
+          <li><code>game_state.py</code> FSM: menu / playing / paused / gameover</li>
+          <li><code>highscore.py</code> persistencia JSON</li>
+          <li><code>cheat.py</code></li>
+        </ul>
+      </div>
+      <div class="hero-card b">
+        <span class="role">Persona B</span>
+        <h3>UI / Render / Packaging</h3>
+        <ul class="filelist">
+          <li><code>renderer.py</code> / <code>view.py</code> dibujo con MLX/pygame</li>
+          <li><code>ui/menu.py</code></li>
+          <li><code>ui/hud.py</code></li>
+          <li><code>ui/pause_screen.py</code></li>
+          <li><code>ui/game_over_screen.py</code></li>
+          <li><code>input_handler.py</code> teclado</li>
+          <li><code>packaging/</code> script Itch.io / Steam</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note-strip">⚠ Si dos ramas van a tocar el mismo archivo (ej. <code>main.py</code> o <code>game_state.py</code>), avisad en el chat del equipo antes de empezar — es la señal para una sync rápida en vez de arriesgar un merge conflict grande.</div>
+  </div>
+</section>
+
+<section id="git">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="sec-num">02 — FLUJO DE GIT</p>
+      <h2 class="sec-title">Protocolo de ramas</h2>
+      <p class="sec-desc">Rama <b>por tarea</b>, no por persona. Nada de "rama-A" / "rama-B" fijas donde cada uno acumula días de trabajo — eso genera un merge gigante al final, con conflictos grandes y difíciles de resolver.</p>
+    </div>
+
+    <div class="git-grid">
+      <div class="tree">main<span class="l1">                        # siempre estable, funciona con Makefile run</span>
+ └── dev<span class="l1">                    # rama de integración diaria</span>
+      ├── feature/config-parser        <span class="a">(A)</span>
+      ├── feature/maze-loader          <span class="a">(A)</span>
+      ├── feature/player               <span class="a">(A)</span>
+      ├── feature/ghost-ai             <span class="a">(A)</span>
+      ├── feature/highscore            <span class="a">(A)</span>
+      ├── feature/cheat-mode           <span class="a">(A)</span>
+      ├── feature/renderer             <span class="b">(B)</span>
+      ├── feature/ui-menu              <span class="b">(B)</span>
+      ├── feature/ui-hud               <span class="b">(B)</span>
+      ├── feature/ui-pause-gameover    <span class="b">(B)</span>
+      └── feature/packaging            <span class="b">(B)</span></div>
+
+      <ul class="rules">
+        <li><b>main</b> solo se actualiza vía merge desde <b>dev</b>, nunca directo.</li>
+        <li>Cada tarea nueva = rama nueva desde <code>dev</code> — nunca trabajéis los dos en la misma rama a la vez.</li>
+        <li>Commits pequeños, prefijo por tipo: <code>feat:</code> <code>fix:</code> <code>test:</code> <code>docs:</code> <code>refactor:</code> (Conventional Commits) — facilita el changelog para la documentación de gestión.</li>
+        <li>Pull Request obligatorio para mergear a <code>dev</code>, aunque seáis dos — el otro revisa antes de aprobar. Doble uso: evidencia de "peer review" para la gestión del proyecto.</li>
+        <li><code>git pull --rebase</code> antes de empezar cada día, para evitar historiales divergentes.</li>
+        <li class="warn">Borrar la rama feature en cuanto se mergea, para mantener el repo limpio.</li>
+      </ul>
+    </div>
+
+    <div class="term">
+      <div class="term-bar"><span></span><span></span><span></span><b>daily-flow.sh</b></div>
+      <pre><span class="cmt"># Al empezar una tarea nueva</span>
+<span class="cmd">git checkout dev
+git pull --rebase
+git checkout -b feature/nombre-tarea</span>
+
+<span class="cmt"># Mientras trabajas (commits pequeños y frecuentes)</span>
+<span class="cmd">git add archivo.py
+git commit -m "feat: descripción corta de lo que hace"</span>
+
+<span class="cmt"># Al terminar la tarea → PR hacia dev → revisión → merge</span>
+<span class="cmd">git push origin feature/nombre-tarea
+git checkout dev && git pull --rebase
+git branch -d feature/nombre-tarea
+git push origin --delete feature/nombre-tarea</span>
+
+<span class="cmt"># Traer cambios de dev a tu rama activa</span>
+<span class="cmd">git checkout feature/nombre-tarea
+git rebase dev</span>
+
+<span class="cmt"># Revisión rápida antes de mergear</span>
+<span class="cmd">git diff dev...feature/nombre-tarea</span></pre>
+    </div>
+
+    <p class="phase-label" style="margin-top:34px;">Resolviendo un conflicto de merge</p>
+    <ol class="steps">
+      <li>Git avisa qué archivo(s) tienen conflicto.</li>
+      <li>Abrís el archivo y buscáis <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> <code>=======</code> <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>.</li>
+      <li>Decidís juntos (chat/llamada de 2 min) qué versión se queda, o combináis ambas.</li>
+      <li>Borráis las marcas, guardáis, <code>git add</code> sobre ese archivo.</li>
+      <li><code>git rebase --continue</code> (o <code>git commit</code> si era un merge normal).</li>
+      <li>Corréis tests/lint de nuevo antes de pushear, por si el conflicto rompió algo silenciosamente.</li>
+    </ol>
+
+    <div class="note-strip" style="margin-top:24px;">🔧 Extra recomendado: hook de <b>pre-commit</b> (<code>flake8</code> + <code>mypy</code>) para que nunca llegue código roto a <code>dev</code>. Y un tablero Kanban (GitHub Projects / Trello / Notion) — os sirve de organización real y de evidencia para el apartado "Project management".</div>
+  </div>
+</section>
+
+<section id="mision">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="sec-num">03 — CRONOGRAMA</p>
+      <h2 class="sec-title">Línea de misión</h2>
+      <p class="sec-desc">20 entradas de bitácora. <span style="color:var(--amber)">Los días marcados <b>SYNC</b> no son opcionales</span>: si os saltáis la sincronización de interfaces, ahí es cuando aparecen los conflictos de Git.</p>
+    </div>
+
+    <p class="phase-label">Fase 0 — Kickoff</p>
+    <details class="day joint" open>
+      <summary>
+        <span class="day-num">01</span>
+        <span class="day-title">Kickoff — JUNTOS</span>
+        <span class="day-flags"><span class="flag check">Joint</span></span>
+      </summary>
+      <div class="day-body">
+        <div class="task-col full">
+          <p>Definir interfaces/contratos: qué métodos tiene <code>Ghost</code>, qué devuelve <code>MazeLoader.load()</code>, forma del config ya parseado. Escribirlo como stubs con type hints.</p>
+          <p>Setup del repo: Makefile (<code>install</code>, <code>run</code>, <code>debug</code>, <code>clean</code>, <code>lint</code>), flake8, mypy, <code>.gitignore</code>, entorno virtual. Crear ramas de trabajo iniciales.</p>
+          <p class="theory"><b>Teoría:</b> OOP (composición vs herencia) · diseño por contrato · flujo de branches en Git.</p>
+        </div>
+      </div>
+    </details>
+
+    <p class="phase-label">Fase 1 — Cimientos (Días 2–9)</p>
+
+    <details class="day">
+      <summary><span class="day-num">02</span><span class="day-title">Config &amp; ventana</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p><code>config.py</code> — parseo de JSON ignorando líneas <code>#</code> (y opcionalmente <code>//</code> <code>/* */</code>), validación de claves, valores por defecto seguros.</p><p class="theory"><b>Teoría:</b> parsing de texto, regex básico.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Setup de la librería gráfica (MLX o similar) — abrir ventana, dibujar un grid estático de prueba.</p><p class="theory"><b>Teoría:</b> game loop y delta time.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">03</span><span class="day-title">Maze loader &amp; menú</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Integrar el paquete <code>A-Maze-ing</code> asignado → <code>maze_loader.py</code>, probar con <code>PERFECT=False</code>, manejar fallos del generador sin crash.</p><p class="theory"><b>Teoría:</b> patrón adaptador.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Esqueleto de <code>ui/menu.py</code> (Start Game / View Highscores / Instructions / Exit) — pantalla estática.</p><p class="theory"><b>Teoría:</b> diseño de pantallas/estados de UI.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">04</span><span class="day-title">Player &amp; input</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Clase base <code>Entity</code> + <code>Player</code> (movimiento en 4 direcciones, solo por corredores, colisión con paredes).</p><p class="theory"><b>Teoría:</b> máquinas de estados finitos (FSM) para el game loop.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p><code>input_handler.py</code> — captura de teclado (flechas/WASD), acciones dummy.</p><p class="theory"><b>Teoría:</b> patrones de manejo de eventos.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">05</span><span class="day-title">Pacgums &amp; renderer</span><span class="day-flags"><span class="flag sync">Sync 15'</span></span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p><code>Pacgum</code> y <code>Super-pacgum</code> — colocación (corredores / 4 esquinas).</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p><code>renderer.py</code> — dibujar maze + jugador usando las estructuras de datos de A.</p></div>
+        <div class="sync-box">🔄 Sync (15 min): confirmar formato de datos del maze y del jugador.</div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">06</span><span class="day-title">Ghost base &amp; HUD</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p><code>Ghost</code> base — movimiento autónomo por corredores (base para el pathfinding).</p><p class="theory"><b>Teoría:</b> BFS en grids.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>HUD (score, vidas, nivel, tiempo restante).</p><p class="theory"><b>Teoría:</b> renderizado de overlays/HUD.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">07</span><span class="day-title">IA de persecución &amp; pantallas fin</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Comportamiento de persecución por fantasma (target tile): Blinky persigue directo, Pinky emboscada, Inky impredecible, Clyde errático.</p><p class="theory"><b>Teoría:</b> heurísticas de IA simples (target-tile).</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Pantallas de Game Over y Victoria (UI estática).</p><p class="theory"><b>Teoría:</b> transiciones entre pantallas.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">08</span><span class="day-title">Frightened mode &amp; pausa</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Estado "edible"/frightened de los fantasmas + respawn tras ser comidos (timers).</p><p class="theory"><b>Teoría:</b> timers y cooldowns en una FSM.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Menú de pausa (resume / volver al menú).</p><p class="theory"><b>Teoría:</b> pausar/reanudar el loop sin romper estado.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">09</span><span class="day-title">Scoring &amp; conexión de estados</span><span class="day-flags"><span class="flag sync">Sync 30'</span></span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Sistema de puntuación (pacgum/super-pacgum/fantasma) conectado a las colisiones.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Conectar botones del menú a <code>game_state.py</code> (Start → Playing, etc.).</p></div>
+        <div class="sync-box">🔄 Sync (30 min): cerrar juntos el contrato de <code>game_state.py</code>.</div>
+      </div>
+    </details>
+
+    <p class="phase-label">Punto de control — Integración</p>
+    <details class="day joint check">
+      <summary><span class="day-num">10</span><span class="day-title">Integración — JUNTOS</span><span class="day-flags"><span class="flag check">Checkpoint</span></span></summary>
+      <div class="day-body">
+        <div class="task-col full">
+          <p>Unir lógica de A con renderizado de B: conseguir un nivel completo jugable de principio a fin. Cazar y arreglar bugs de integración.</p>
+          <p class="theory"><b>Teoría:</b> debugging con <code>pdb</code>, testing de integración.</p>
+        </div>
+        <div class="sync-box">📍 Si vais con retraso, este es el punto de control natural para replanificar el resto del calendario.</div>
+      </div>
+    </details>
+
+    <p class="phase-label">Fase 2 — Profundidad (Días 11–15)</p>
+
+    <details class="day">
+      <summary><span class="day-num">11</span><span class="day-title">Highscore &amp; pantalla de nombre</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p><code>highscore.py</code> — persistencia JSON, top 10, validación de nombre (máx. 10 car., alfanumérico + espacios) y puntuación.</p><p class="theory"><b>Teoría:</b> manejo robusto de I/O (archivo corrupto o ausente).</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Pantalla de "introducir nombre" en Game Over/Victoria.</p><p class="theory"><b>Teoría:</b> UX de inputs de texto custom.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">12</span><span class="day-title">Progresión de niveles</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Progresión de niveles (≥10 niveles, seed=42 en nivel 1, random después, límite de tiempo, mantener score/vidas entre niveles).</p><p class="theory"><b>Teoría:</b> RNG con semilla.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Mostrar highscores en el menú principal; refinar HUD con nivel/tiempo.</p><p class="theory"><b>Teoría:</b> binding de datos dinámicos en UI.</p></div>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">13</span><span class="day-title">Cheat mode</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Cheat mode (invencibilidad, skip de nivel, congelar fantasmas, vidas extra, velocidad) — flags/hooks en el core.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Atajos de teclado del cheat mode + indicador visual de que está activo.</p></div>
+        <p class="theory full"><b>Teoría (ambos):</b> cómo exponer flags de debug sin romper el flujo normal.</p>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">14</span><span class="day-title">Errores &amp; pulido visual</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Repaso de manejo de errores en config/maze/highscore (nunca traceback, siempre mensaje claro + fallback).</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Pulido visual (colores, fuentes, animaciones, "vibe" del juego).</p></div>
+        <p class="theory full"><b>Teoría:</b> buenas prácticas de excepciones · principios básicos de UI/UX.</p>
+      </div>
+    </details>
+
+    <details class="day">
+      <summary><span class="day-num">15</span><span class="day-title">Tests &amp; lint</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Tests unitarios (pytest) del core, cubriendo edge cases.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Plan de pruebas manuales de la UI.</p></div>
+        <p class="theory full"><b>Ambos:</b> pasar <code>flake8</code> y <code>mypy --strict</code>, corregir todo. · <b>Teoría:</b> pytest básico, matices de mypy strict.</p>
+      </div>
+    </details>
+
+    <p class="phase-label">Punto de control — Playtesting</p>
+    <details class="day joint check">
+      <summary><span class="day-num">16</span><span class="day-title">Playtesting — JUNTOS</span><span class="day-flags"><span class="flag check">Checkpoint</span></span></summary>
+      <div class="day-body">
+        <div class="task-col full">
+          <p>Jugar de principio a fin: ≥10 niveles, timeout de nivel, config corrupto, fallo del generador, perder todas las vidas, ganar el juego. Arreglar todos los bugs encontrados.</p>
+        </div>
+      </div>
+    </details>
+
+    <p class="phase-label">Fase 3 — Cierre (Días 17–20)</p>
+
+    <details class="day">
+      <summary><span class="day-num">17</span><span class="day-title">Docstrings &amp; empaquetado</span></summary>
+      <div class="day-body">
+        <div class="task-col a"><span class="who">Persona A</span><p>Docstrings (PEP 257) en todo <code>core/</code>.</p></div>
+        <div class="task-col b"><span class="who">Persona B</span><p>Docstrings en <code>ui/</code> + preparar script de empaquetado (PyInstaller / butler para Itch.io).</p></div>
+        <p class="theory full"><b>Teoría:</b> empaquetado de apps Python para distribución.</p>
+      </div>
+    </details>
+
+    <details class="day joint">
+      <summary><span class="day-num">18</span><span class="day-title">Deploy — JUNTOS</span><span class="day-flags"><span class="flag check">Joint</span></span></summary>
+      <div class="day-body">
+        <div class="task-col full"><p>Empaquetar y subir a Itch.io/Steam como build privada/no listada. Probar el build empaquetado de principio a fin.</p></div>
+      </div>
+    </details>
+
+    <details class="day joint">
+      <summary><span class="day-num">19</span><span class="day-title">Documentación — JUNTOS</span><span class="day-flags"><span class="flag check">Joint</span></span></summary>
+      <div class="day-body">
+        <div class="task-col full">
+          <p>Redactar <code>README.md</code> completo (primera línea en cursiva con logins, Descripción, Instrucciones, Recursos + uso de IA, Configuración, Highscore, Maze Generation, Implementation, Arquitectura, Project Management con link a la carpeta de gestión).</p>
+          <p>Completar documentos de gestión de proyecto (Gantt/Kanban, seguimiento real vs plan, análisis de riesgos, organización del equipo, plan de test de aceptación, conflictos/bloqueos).</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="day joint check">
+      <summary><span class="day-num">20</span><span class="day-title">Repaso final — JUNTOS</span><span class="day-flags"><span class="flag check">Defensa</span></span></summary>
+      <div class="day-body">
+        <div class="task-col full">
+          <p>Releer el subject línea por línea como checklist. Ensayar la defensa: cada uno debe poder explicar <b>también</b> el módulo del otro (os pueden preguntar cualquier cosa).</p>
+          <p>Preparar mentalmente el "recode" (pequeña modificación en vivo durante la evaluación). Día de buffer para últimos arreglos.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section id="tacticas">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="sec-num">04 — HÁBITOS</p>
+      <h2 class="sec-title">Tácticas extra</h2>
+      <p class="sec-desc">Cuatro rutinas pequeñas que ahorran dolores de cabeza grandes.</p>
+    </div>
+    <div class="tactics">
+      <div class="tac-card">
+        <span class="ic">◆</span>
+        <h4>Daily de 5–10 min</h4>
+        <p>Qué hice ayer, qué haré hoy, qué me bloquea. No hace falta que sea presencial ni largo — mantiene sincronizados los contratos entre módulos.</p>
+      </div>
+      <div class="tac-card">
+        <span class="ic">✓</span>
+        <h4>Checklist pre-merge</h4>
+        <p>¿Pasa flake8? ¿pasa mypy? ¿tiene docstrings? ¿tiene al menos un test si es lógica del core? ¿rompe algo en <code>dev</code>?</p>
+      </div>
+      <div class="tac-card">
+        <span class="ic">◈</span>
+        <h4>DECISIONS.md</h4>
+        <p>Documento vivo de decisiones técnicas: cada elección importante (ej. "heurística greedy en vez de A* para los fantasmas") anotada con una línea del porqué.</p>
+      </div>
+      <div class="tac-card">
+        <span class="ic">▣</span>
+        <h4>Registro de bloqueos</h4>
+        <p>Anotad los bloqueos reales que surjan (ej. "el paquete A-Maze-ing no traía tal método") — contenido directo para "Summary of any blocking points".</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="riesgos">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="sec-num">05 — GESTIÓN DE RIESGOS</p>
+      <h2 class="sec-title">Riesgos y mitigación</h2>
+      <p class="sec-desc">Punto de partida rápido para el análisis de riesgos que pide el apartado de gestión del proyecto.</p>
+    </div>
+    <table class="risk-table">
+      <thead>
+        <tr><th>Riesgo</th><th>Severidad</th><th>Mitigación</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Conflictos de merge grandes al final</td><td><span class="sev high">Alta</span></td><td>Ramas por tarea (no por persona), commits pequeños, avisar en chat antes de tocar archivos compartidos.</td></tr>
+        <tr><td>Contratos de interfaz desincronizados entre A y B</td><td><span class="sev high">Alta</span></td><td>Respetar los días de Sync marcados (05 y 09) y el checkpoint del Día 10.</td></tr>
+        <tr><td>El paquete A‑Maze‑ing asignado falla o tiene una interfaz inesperada</td><td><span class="sev mid">Media</span></td><td>Adaptador (<code>maze_loader.py</code>) que aísla el resto del código; manejo de errores sin crash desde el Día 3.</td></tr>
+        <tr><td>Retraso general de calendario</td><td><span class="sev mid">Media</span></td><td>Día 10 como punto de control natural para replanificar el resto de las tareas.</td></tr>
+        <tr><td>No poder explicar el módulo del compañero en la defensa</td><td><span class="sev mid">Media</span></td><td>Día 20 de repaso cruzado + PRs revisadas por el otro durante todo el proyecto.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="phase-label" style="margin-top:36px;">Notas clave</p>
+    <ul class="checklist">
+      <li><b>Los días de "Sync" no son opcionales.</b> Si os saltáis la sincronización de interfaces, es cuando aparecen los conflictos de Git.</li>
+      <li>Si vais con retraso, el <b>Día 10</b> (integración) es el punto de control natural para replanificar el resto.</li>
+      <li><b>No escribáis vuestro propio generador de laberintos</b> — está explícitamente prohibido en el subject.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p class="foot-line">PAC-MAN PROTOCOL <b>//</b> Persona A · CORE <b>//</b> Persona B · UI <b>//</b> v1.0 — plan orientativo, no necesariamente así</p>
+  </div>
+</footer>
+
+</body>
+</html>
