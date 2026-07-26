@@ -1,28 +1,28 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Page-1" id="N3w7T5fB3-ADwXFvyv0g">
-    <mxGraphModel dx="2704" dy="2138" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1635" dy="1566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="pZEQheXnK_obG8SVv76c-1" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;" value="Entity el molde común para cualquier cosa que vive dentro del maze y tiene presencia visual.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;* idSprite solo texto, no png es una etiqueta que identifica las imagenes que debe mostrar.&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;* refMaze - referencia a un objeto, concretamente al objeto Maze&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;* conPos(), conSprite() es un getter.&lt;/div&gt;" vertex="1">
-          <mxGeometry height="135" width="260" x="-415" y="600" as="geometry" />
+        <mxCell id="pZEQheXnK_obG8SVv76c-1" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="* &lt;b&gt;posActual &lt;/b&gt;- donde esta la entidad ahora mismo, como coordenada (fila, columna) dentro del grid del laberinto.&lt;div&gt;* &lt;b&gt;dirActual: &lt;/b&gt;hacia qué dirección se está moviendo o mirando ahora mismo.&lt;/div&gt;&lt;div&gt;* &lt;b&gt;idSprite: &lt;/b&gt;Un identificador (no la imagen en sí) de qué apariencia visual le corresponde.&lt;/div&gt;&lt;div&gt;* &lt;b&gt;refMaze &lt;/b&gt;una referencia al objeto &lt;b&gt;Maze &lt;/b&gt;actual.&lt;/div&gt;&lt;div&gt;&lt;b&gt;* posSpawn &lt;/b&gt;posición fija donde nace la entidad.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;** &lt;b&gt;conPos(): &lt;/b&gt;devuelve la posición actual. Lo usa, sobretodo, GameState para comprobar colisiones entre entidades.&lt;/div&gt;&lt;div&gt;** &lt;b&gt;conSprite(): &lt;/b&gt;devuelve el identificador de sprite actual. Este es el punto de conexión con el renderer.&lt;/div&gt;&lt;div&gt;** &lt;b&gt;respawnear():&amp;nbsp;&lt;/b&gt;&amp;nbsp;devuelve la entidad a su &lt;b&gt;posSpaawn, &lt;/b&gt;y probablemente resetea a &lt;b&gt;dirActual a parado.&lt;/b&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="210" width="430" x="-740" y="565" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-2" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-1" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0.997;exitY=0.384;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="pZEQheXnK_obG8SVv76c-65" value="">
+        <mxCell id="pZEQheXnK_obG8SVv76c-2" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-1" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0.997;exitY=0.384;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.005;entryY=0.125;entryDx=0;entryDy=0;entryPerimeter=0;" target="FFUdLSGXX28_ailHgpHC-3" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="-97.5" y="856.86" as="sourcePoint" />
-            <mxPoint x="-61.52000000000021" y="1032.8600000000001" as="targetPoint" />
+            <mxPoint x="-120" y="685" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-3" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;div&gt;Direction&lt;/div&gt;" vertex="1">
-          <mxGeometry height="140" width="145" x="-300" y="760" as="geometry" />
+          <mxGeometry height="140" width="145" x="-280" y="670" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-4" parent="pZEQheXnK_obG8SVv76c-3" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="UP&lt;div&gt;DOWN&lt;/div&gt;&lt;div&gt;LEFT&lt;/div&gt;&lt;div&gt;RIGHT&lt;br&gt;NONE / STOPPED&lt;/div&gt;" vertex="1">
           <mxGeometry height="90" width="145" y="50" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-5" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-66" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.478;exitY=1.015;exitDx=0;exitDy=0;exitPerimeter=0;" target="pZEQheXnK_obG8SVv76c-65" value="">
+        <mxCell id="pZEQheXnK_obG8SVv76c-5" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-66" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;entryX=0.208;entryY=-0.002;entryDx=0;entryDy=0;exitX=0.478;exitY=1.015;exitDx=0;exitDy=0;exitPerimeter=0;entryPerimeter=0;" target="FFUdLSGXX28_ailHgpHC-3" value="">
           <mxGeometry relative="1" width="160" as="geometry">
             <mxPoint x="-97.5" y="936.86" as="sourcePoint" />
-            <mxPoint x="-12.5" y="1006.86" as="targetPoint" />
+            <mxPoint x="-62.5" y="640" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-6" connectable="0" parent="pZEQheXnK_obG8SVv76c-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="hereda" vertex="1">
@@ -30,10 +30,10 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-7" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="Respawnear es la acción de devolver al jugador a su posición inicial (el centro de maze)&amp;nbsp;&lt;div&gt;&lt;br&gt;&lt;div&gt;* (Game over) morir del todo.&lt;/div&gt;&lt;div&gt;* (Morir 1vez) - pierdes vida y sigues jugando.&lt;/div&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="130" width="205" x="-650" y="320" as="geometry" />
+        <mxCell id="pZEQheXnK_obG8SVv76c-7" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;b&gt;Player&lt;/b&gt; es un tipo de &lt;b&gt;Entity, &lt;/b&gt;se instancia.&amp;nbsp;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Respawnear&lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt; es la acción de devolver al jugador a su posición inicial (el centro de maze)&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;div&gt;* &lt;b&gt;(Game over) &lt;/b&gt;morir del todo.&lt;/div&gt;&lt;div&gt;* &lt;b&gt;(Morir 1vez) &lt;/b&gt;- pierdes vida y sigues jugando.&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="130" width="205" x="-640" y="240" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-8" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-70" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" value="">
+        <mxCell id="pZEQheXnK_obG8SVv76c-8" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-70" style="endArrow=block;dashed=1;endFill=0;endSize=12;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.677;entryY=0.005;entryDx=0;entryDy=0;entryPerimeter=0;" target="FFUdLSGXX28_ailHgpHC-3" value="">
           <mxGeometry relative="1" width="160" as="geometry">
             <mxPoint x="88.92000000000007" y="920.2400000000001" as="sourcePoint" />
             <mxPoint x="80" y="638.38" as="targetPoint" />
@@ -45,7 +45,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-10" parent="1" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" value="&amp;lt;&amp;lt;enumeration&amp;gt;&amp;gt;&lt;div&gt;&lt;span style=&quot;font-size: 12px; text-align: left;&quot;&gt;ModoFantasma&lt;/span&gt;&lt;/div&gt;" vertex="1">
-          <mxGeometry height="110" width="130" x="129" y="510" as="geometry" />
+          <mxGeometry height="110" width="130" x="135" y="495" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-11" parent="pZEQheXnK_obG8SVv76c-10" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" value="CHASE&lt;div&gt;FRIGHTENED&lt;/div&gt;&lt;div&gt;EATEN&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="130" y="50" as="geometry" />
@@ -177,7 +177,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-63" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="* Pacgmun - bolita comible por el Pac-Man.&lt;div&gt;* SuperPacgum - bolita grande de las esquinas.&lt;/div&gt;" vertex="1">
-          <mxGeometry height="95" width="160" x="-522.5" y="190" as="geometry" />
+          <mxGeometry height="95" width="160" x="-520" y="110" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-64" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-74" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0;entryY=0;entryDx=160;entryDy=57.5;entryPerimeter=0;exitX=1;exitY=0.628;exitDx=0;exitDy=0;exitPerimeter=0;" target="pZEQheXnK_obG8SVv76c-63" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
@@ -185,25 +185,22 @@
             <mxPoint x="505" y="1169.3600000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-65" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&amp;nbsp;Entity&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;- posActual&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&amp;nbsp;&lt;/span&gt;&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;tuple(int,int)&lt;/p&gt;&lt;div&gt;&amp;nbsp;- dirActual&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;Direction&lt;/div&gt;&lt;div&gt;&amp;nbsp;- idSprite&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;string&lt;/div&gt;&lt;div&gt;&amp;nbsp;- refMaze&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Maze&lt;/div&gt;&lt;div&gt;&amp;nbsp;- posSwapn&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;tuple(int, int)&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ moverse(direction: Direction) -&amp;gt; booll&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ conPos() -&amp;gt; tuple(int, int)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ conStripe() -&amp;gt; string&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;respawnear() -&amp;gt; void&lt;/span&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="180" width="230" x="-120" y="640" as="geometry" />
-        </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-66" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Player&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- vidasRestantes&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;int&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ recibirInput(direccion: Direction) -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ perderVida() -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ respawneaCentroMaze() -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ compVida() -&amp;gt; boolean&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ añadirVida() -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="130" width="240" x="-405" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-67" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-65" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0.002;exitY=0.778;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="pZEQheXnK_obG8SVv76c-3" value="">
+        <mxCell id="pZEQheXnK_obG8SVv76c-67" edge="1" parent="1" source="FFUdLSGXX28_ailHgpHC-3" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=-0.014;exitY=0.352;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="pZEQheXnK_obG8SVv76c-3" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="220" y="906.86" as="sourcePoint" />
+            <mxPoint x="-119.53999999999996" y="780.0400000000004" as="sourcePoint" />
             <mxPoint x="295" y="1031.8600000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-70" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Ghost&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- modoActual&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;ModoFantasma&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- idFantasma&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- posObjetivo tuple(int, int)&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;proxMovimiento(posJugador: tuple(int,int)) -&amp;gt; Direction&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;cambiarModo(nuevoModo: ModoFantasma) -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="130" width="326.25" x="-80" y="360" as="geometry" />
+          <mxGeometry height="130" width="326.25" x="-81.24" y="350" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-71" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="*&amp;nbsp;posObjetivo objetivo de destino para el pathfinding, es decir la casilla concreta hacia la que se está dirigiendo el fantasma ahora mismo." vertex="1">
-          <mxGeometry height="90" width="170" x="270" y="370" as="geometry" />
+        <mxCell id="pZEQheXnK_obG8SVv76c-71" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="&lt;div&gt;&lt;b&gt;Ghost &lt;/b&gt;necesita todo lo básico de &lt;b&gt;Entity. &lt;/b&gt;Se instancia 4veces. &lt;b&gt;Ghost &lt;/b&gt;necesita decidir su propio movimiento sin que nadie lo controle desde fuera. &lt;b&gt;Ghost &lt;/b&gt;se mueve por el mismo.&lt;b&gt;&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;Cada instancia es completamente independiente: tiene su propio &lt;/span&gt;&lt;code class=&quot;bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]&quot; style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;modoActual&lt;/code&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;, su propia &lt;/span&gt;&lt;code class=&quot;bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]&quot; style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;posObjetivo&lt;/code&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;, y calcula su propio movimiento cada vez.&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;*&amp;nbsp;&lt;b&gt;modoActual&lt;/b&gt;:&amp;nbsp;persiguiendo (chase), huyendo (frightened), o ya comido y volviendo a su esquina (eaten). &lt;/div&gt;*&amp;nbsp;posObjetivo objetivo de destino para el pathfinding, es decir la casilla concreta hacia la que se está dirigiendo el fantasma ahora mismo." vertex="1">
+          <mxGeometry height="210" width="330" x="310" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="pZEQheXnK_obG8SVv76c-72" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-70" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.994;exitY=0.35;exitDx=0;exitDy=0;exitPerimeter=0;" target="pZEQheXnK_obG8SVv76c-71" value="">
+        <mxCell id="pZEQheXnK_obG8SVv76c-72" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-70" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.999;exitY=0.445;exitDx=0;exitDy=0;exitPerimeter=0;" target="pZEQheXnK_obG8SVv76c-71" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
             <mxPoint x="95.85" y="491.56" as="sourcePoint" />
             <mxPoint x="358" y="965.86" as="targetPoint" />
@@ -222,13 +219,13 @@
           <mxGeometry height="170" width="240" x="943.89" y="130" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-89" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;ConfigLoader&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&amp;nbsp;+ cargarConfig(rutaArchivo: string) -&amp;gt; Config&lt;/div&gt;&lt;div&gt;&amp;nbsp;+ quitarComentarios(contenido: string) -&amp;gt; string&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="100" width="260" x="960" y="390" as="geometry" />
+          <mxGeometry height="100" width="260" x="1070" y="365" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-96" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;MazeLoader&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&amp;nbsp;+&amp;nbsp;generarMaze(tamaño: tuple(int,int), seed: int) -&amp;gt; Maze&lt;/div&gt;&lt;div&gt;&amp;nbsp;+&amp;nbsp;convertirPaqueteExterno(mazeCrudo: ndarray) -&amp;gt; Maze&lt;/div&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
           <mxGeometry height="90" width="320" x="400" y="-40" as="geometry" />
         </mxCell>
         <mxCell id="pZEQheXnK_obG8SVv76c-97" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;Maze&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- paredes&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;set[tuple(int, int)]&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- caminos&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;set[tuple(int, int)]&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- anchoMaze&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;int&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- altoMaze&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;int&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;+ esPared(pos: tuple(int, int)) -&amp;gt; bool&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ esCamino(pos: tuple(int, int)) -&amp;gt; bool&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ conPosicionCentro() -&amp;gt; tuple(int, int)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ conEsquinas() -&amp;gt; list[tuple(int, int)]&lt;/p&gt;" vertex="1">
-          <mxGeometry height="180" width="220" x="460" y="350" as="geometry" />
+          <mxGeometry height="180" width="220" x="700" y="460" as="geometry" />
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-14" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-78" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;align=left;verticalAlign=bottom;rounded=0;exitX=0.211;exitY=1.008;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.912;entryY=0.009;entryDx=0;entryDy=0;entryPerimeter=0;" target="pZEQheXnK_obG8SVv76c-66" value="">
           <mxGeometry relative="1" x="-1" y="3" as="geometry">
@@ -283,9 +280,9 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="x02PCa_xB7c4ORvj1PGW-31" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-65" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;align=left;verticalAlign=bottom;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.45;entryY=0.998;entryDx=0;entryDy=0;entryPerimeter=0;" target="pZEQheXnK_obG8SVv76c-97" value="">
+        <mxCell id="x02PCa_xB7c4ORvj1PGW-31" edge="1" parent="1" source="FFUdLSGXX28_ailHgpHC-3" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;align=left;verticalAlign=bottom;rounded=0;exitX=1;exitY=0.335;exitDx=0;exitDy=0;entryX=0.45;entryY=0.998;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;" target="pZEQheXnK_obG8SVv76c-97" value="">
           <mxGeometry relative="1" x="-1" y="3" as="geometry">
-            <mxPoint x="440" y="690" as="sourcePoint" />
+            <mxPoint x="111.84000000000015" y="667.7200000000003" as="sourcePoint" />
             <mxPoint x="440" y="791" as="targetPoint" />
           </mxGeometry>
         </mxCell>
@@ -348,7 +345,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-52" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;EntradaHighscore&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;-&amp;nbsp;username&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;string&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&amp;nbsp;- score&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;int&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="80" width="130" x="-350" y="-180" as="geometry" />
+          <mxGeometry height="80" width="130" x="-425" y="-180" as="geometry" />
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-53" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;HighScoreManager&lt;/span&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;- rutaArchivo&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;string&lt;/span&gt;&lt;/p&gt;&lt;div&gt;&amp;nbsp;- entradas&amp;nbsp; &amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;list[EntradaHighscore]&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;cargarDesdeDisco() -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;guardarDisco() -&amp;gt; void&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+&amp;nbsp;añadirPuntuacionNueva(username: string, score: int) -&amp;gt; bool&lt;br&gt;- mantenerSoloTop10() -&amp;gt; void&lt;/p&gt;" vertex="1">
           <mxGeometry height="135" width="360" x="-140" y="-150" as="geometry" />
@@ -362,6 +359,16 @@
         <mxCell id="x02PCa_xB7c4ORvj1PGW-55" connectable="0" parent="x02PCa_xB7c4ORvj1PGW-54" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="contiene" vertex="1">
           <mxGeometry relative="1" x="-0.1439" y="-2" as="geometry">
             <mxPoint x="-13" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="x02PCa_xB7c4ORvj1PGW-71" connectable="0" parent="x02PCa_xB7c4ORvj1PGW-54" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="0" vertex="1">
+          <mxGeometry relative="1" x="-0.5785" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="x02PCa_xB7c4ORvj1PGW-72" connectable="0" parent="x02PCa_xB7c4ORvj1PGW-54" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="10" vertex="1">
+          <mxGeometry relative="1" x="0.6099" y="-2" as="geometry">
+            <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-58" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-66" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=-0.007;entryY=0.406;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="pZEQheXnK_obG8SVv76c-70" value="">
@@ -379,7 +386,7 @@
           <mxGeometry height="110" width="240" x="280" y="-210" as="geometry" />
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-65" parent="1" style="verticalAlign=top;align=center;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;GameView&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;Captura teclado (incl. atajos de cheat: invencibilidad, vida extra, saltar nivel, congelar fantasmas) y delega en GameEngine/CheatManager/Player según corresponda.&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;Es del módulo &lt;code class=&quot;bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]&quot;&gt;ui/&lt;/code&gt;&lt;/p&gt;&lt;br&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
-          <mxGeometry height="120" width="240" x="703.89" y="460" as="geometry" />
+          <mxGeometry height="120" width="240" x="1000" y="520" as="geometry" />
         </mxCell>
         <mxCell id="x02PCa_xB7c4ORvj1PGW-66" edge="1" parent="1" source="pZEQheXnK_obG8SVv76c-81" style="endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;align=left;verticalAlign=bottom;rounded=0;exitX=1.016;exitY=0.919;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="x02PCa_xB7c4ORvj1PGW-65" value="">
           <mxGeometry relative="1" x="-1" y="3" as="geometry">
@@ -400,6 +407,27 @@
         <mxCell id="x02PCa_xB7c4ORvj1PGW-69" connectable="0" parent="x02PCa_xB7c4ORvj1PGW-66" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="0" vertex="1">
           <mxGeometry relative="1" x="0.6098" as="geometry">
             <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FFUdLSGXX28_ailHgpHC-1" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;" value="Cuando empezasteis a pensar en Player y Ghost por separado, os disteis cuenta de que ambos necesitan resolver exactamente los mismo 3 problemas básicos.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;1. Ambos existen en algún sitio del maze (Necesitan posición).&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;2. Ambos tienen que verse en pantalla (Stripe).&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;3. Tienen que respetar las paredes del laberinto (Consultar colisiones).&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="300" x="-120" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="FFUdLSGXX28_ailHgpHC-2" edge="1" parent="1" source="FFUdLSGXX28_ailHgpHC-3" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=0.587;exitY=0.994;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.485;entryY=-0.01;entryDx=0;entryDy=0;entryPerimeter=0;" target="FFUdLSGXX28_ailHgpHC-1" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-18.799999999999955" y="823.06" as="sourcePoint" />
+            <mxPoint x="-140" y="860" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="FFUdLSGXX28_ailHgpHC-3" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Abstract&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;Entity&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;- posActual&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&amp;nbsp;&lt;/span&gt;&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;tuple(int,int)&lt;/p&gt;&lt;div&gt;&amp;nbsp;- dirActual&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;Direction&lt;/div&gt;&lt;div&gt;&amp;nbsp;- idSprite&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;string&lt;/div&gt;&lt;div&gt;&amp;nbsp;- refMaze&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;Maze&lt;/div&gt;&lt;div&gt;&amp;nbsp;- posSwapn&amp;nbsp;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;tuple(int, int)&lt;/div&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+ moverse(direction: Direction) -&amp;gt; booll&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+ conPos() -&amp;gt; tuple(int, int)&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+ conStripe() -&amp;gt; string&lt;/p&gt;&lt;p style=&quot;margin: 0px 0px 0px 4px;&quot;&gt;+ &lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;respawnear() -&amp;gt; void&lt;/span&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="200" width="220" x="-100" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="FFUdLSGXX28_ailHgpHC-5" parent="1" style="shape=note;size=20;whiteSpace=wrap;html=1;align=left;" value="* &lt;b&gt;vidasRestantes &lt;/b&gt;empieza con el valor que diga la &lt;b&gt;Config(por defecto, 3)&amp;nbsp;&lt;/b&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;** &lt;b&gt;recibirInput(): &lt;/b&gt;No captura la tecla él mismo&lt;b&gt;&amp;nbsp;&lt;/b&gt;(eso es de &lt;b&gt;GameView&lt;/b&gt;) solo recibe ya una &lt;b&gt;Direction &lt;/b&gt;traducida&amp;nbsp; y la guarda como la dirección hacia la que el jugador se mueve.&lt;/div&gt;&lt;div&gt;**&amp;nbsp;&lt;b&gt;respawneaCentroMaze()&amp;nbsp;&lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;evolver al jugador a &lt;/span&gt;&lt;code class=&quot;bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]&quot; style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;posSpawn.&lt;/code&gt;&lt;/div&gt;&lt;div&gt;** &lt;b&gt;compVida(): &lt;/b&gt;comprueba si el jugador sigue vivo.&lt;/div&gt;&lt;div&gt;** &lt;b&gt;añadirVida(): &lt;/b&gt;suma 1 a &lt;b&gt;vidasRestantes. &lt;/b&gt;Es el complemento simétrico de &lt;b&gt;perderVida() &lt;/b&gt;(Se usa en &lt;b&gt;GameView&lt;/b&gt;),&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="360" x="-810" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="FFUdLSGXX28_ailHgpHC-6" edge="1" parent="1" source="FFUdLSGXX28_ailHgpHC-5" style="endArrow=none;dashed=1;html=1;rounded=0;exitX=1;exitY=0.491;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.009;entryY=0.587;entryDx=0;entryDy=0;entryPerimeter=0;" target="pZEQheXnK_obG8SVv76c-66" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="-460" y="340" as="sourcePoint" />
+            <mxPoint x="-322" y="462" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
