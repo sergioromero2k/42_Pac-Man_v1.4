@@ -1,0 +1,6 @@
+#!/home/sergio-alejandro/Documentos/Python/42_Pac-Man_v1.4/venv/bin/python3
+import sys
+from mypy.stubgen import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())
