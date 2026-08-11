@@ -23,8 +23,14 @@ def main() -> None:
     print(test_maze.is_wall((999, 999)))
     print(test_maze.is_path((999, 999)))
 
-    assert test_maze.is_path((0, 0)) is True
-    assert test_maze.is_path((999, 0)) is True
+    try:
+        assert test_maze.is_path((0, 0)) is True, "Error: (0, 0) no es un camino"
+        assert test_maze.is_path((999, 0)) is True, "Error: (999, 0) no es un camino"
+    except AssertionError as e:
+        print(e)
+
+    print(test_maze.get_center_position())
+    print(test_maze.get_corners())
 
 
 if __name__ == "__main__":

@@ -14,13 +14,22 @@ class Maze:
         self.maze_height: int = maze_height
 
     def is_wall(self, pos: tuple[int, int]) -> bool:
+        """Returns True if the given position is a wall."""
         return pos in self.walls
 
     def is_path(self, pos: tuple[int, int]) -> bool:
+        """Returns True if the given position is a walkable path."""
         return pos in self.paths
 
     def get_center_position(self) -> tuple[int, int]:
-        ...
+        """Returns the center position of the maze."""
+        return (self.maze_width // 2, self.maze_height // 2)
 
     def get_corners(self) -> list[tuple[int, int]]:
-        ...
+        """Returns the four corner positions of the maze."""
+        return [
+            (0, 0),
+            (self.maze_width - 1, 0),
+            (0, self.maze_height - 1),
+            (self.maze_width - 1, self.maze_height - 1),
+        ]
