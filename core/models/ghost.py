@@ -1,6 +1,6 @@
 from core.models.entity import Entity
 from core.maze import Maze
-from core.enums import Direction, GhostMode
+from core.enums import Direction, GhostMode, DIRECTION_DELTAS
 
 
 class Ghost(Entity):
@@ -29,7 +29,42 @@ class Ghost(Entity):
 
     def get_next_move(self, player_position: tuple[int, int]) -> Direction:
         """Calculates the next direction to move based on the current mode."""
-        ...
+
+        if self.current_mode == GhostMode.EATEN:
+            self.target_position = self.spawn_position
+        else:
+            self.target_position = player_position
+
+        best_direction = Direction.NONE
+        best_distance: int | None = None
+
+        for direction, (dx, dy) in DIRECTION_DELTAS.items():
+            next_position = (
+                self.current_position[0] + dx, self.current_position[1] + dy)
+
+            if not self.maze_reference.is_path(next_position):
+                continue
+
+            distance = (
+                abs(next_position[0] - self.target_position[0])
+                + abs(next_position[1] - self.target_position[1])
+            )
+
+            is_better = (
+                best_distance is None
+                or (
+                    self.current_mode == GhostMode.FRIGHTENED
+                    and distance > best_distance)
+                or (
+                    self.current_mode != GhostMode.FRIGHTENED
+                    and distance < best_distance)
+            )
+
+            if is_better:
+                best_distance = distance
+                best_direction = direction
+
+        return best_direction
 
     def change_mode(self, new_mode: GhostMode) -> None:
         """Changes the ghost's current behavior mode."""
