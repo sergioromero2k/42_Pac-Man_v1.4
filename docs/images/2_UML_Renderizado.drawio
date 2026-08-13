@@ -1,0 +1,43 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="NsTiciu3zM_S4eIC-FZf">
+    <mxGraphModel dx="751" dy="898" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-1" parent="1" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;fillColor=none;strokeColor=default;" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Renderizar&lt;/h1&gt;&lt;p&gt;Significa &lt;b&gt;convertir datos abstractos en una imagen visible en pantalla. &lt;/b&gt;Es la traducción de &quot;aquí hay algo&quot; (números, coordenadas, estados) a &quot;esto es lo que ve el jugador&quot;. Piénsalo con el ejemplo más directo de vusestro propio proyecto: &lt;b&gt;Entity.get_posicion() &lt;/b&gt;te devuelve (5, 3) solo dos números. Eso, por sí solo, &lt;b&gt;no es nada visual &lt;/b&gt;es información pura. &lt;b&gt;Renderizar &lt;/b&gt;es el proceso de coger ese (5,3) y decidir: &quot;Eso signfiica que tengo que dibujar la imagen de &lt;b&gt;Pac-Man &lt;/b&gt;en el píxel &lt;b&gt;X=240, Y=180&amp;nbsp;&lt;/b&gt;&amp;nbsp;de la ventana.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" vertex="1">
+          <mxGeometry height="212.5" width="290" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-5" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="GameView" vertex="1">
+          <mxGeometry height="125" width="230" x="510" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-6" parent="nw3wwwwj4xG5zAvjcklD-5" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="&amp;nbsp;- game_engine: GameEngine&lt;div&gt;&amp;nbsp;- renderer: Renderer&lt;/div&gt;" vertex="1">
+          <mxGeometry height="39" width="230" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-7" parent="nw3wwwwj4xG5zAvjcklD-5" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="230" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-8" parent="nw3wwwwj4xG5zAvjcklD-5" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="+ on_key_press(key: int) -&amp;gt; void&lt;div&gt;+ on_update(delta_time: float) -&amp;gt; void&lt;/div&gt;&lt;div&gt;+ on_draw() -&amp;gt; void&lt;/div&gt;" vertex="1">
+          <mxGeometry height="52" width="230" y="73" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-9" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="GameEngine" vertex="1">
+          <mxGeometry height="48" width="130" x="470" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-10" parent="nw3wwwwj4xG5zAvjcklD-9" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="14" width="130" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-11" parent="nw3wwwwj4xG5zAvjcklD-9" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="130" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-13" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="Player" vertex="1">
+          <mxGeometry height="48" width="130" x="640" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-14" parent="nw3wwwwj4xG5zAvjcklD-13" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="14" width="130" y="26" as="geometry" />
+        </mxCell>
+        <mxCell id="nw3wwwwj4xG5zAvjcklD-15" parent="nw3wwwwj4xG5zAvjcklD-13" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
+          <mxGeometry height="8" width="130" y="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
