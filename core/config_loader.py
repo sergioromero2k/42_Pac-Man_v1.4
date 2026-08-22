@@ -38,7 +38,15 @@ class ConfigLoader:
         try:
             data = json.loads(content)
         except json.JSONDecodeError as e:
-            print(f"Error: {e}")
+            print(f"[Warning Invalid JSON: {e}. Using default values.]")
+            return Config(
+                lives=DEFAULT_LIVES,
+                pacgum_points=DEFAULT_PACGUM_POINTS,
+                super_pacgum_points=DEFAULT_SUPER_PACGUM_POINTS,
+                ghost_points=DEFAULT_GHOST_POINTS,
+                seed=DEFA
+
+            )
 
         lives_raw = data.get("lives", 3)
         lives = lives_raw if isinstance(lives_raw, int) else 3
