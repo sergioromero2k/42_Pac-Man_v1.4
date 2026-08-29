@@ -47,3 +47,7 @@ class Player(Entity):
     def add_life(self) -> None:
         """Increases the player's remaining lives by one."""
         self.remaining_lives += 1
+
+    def add_score(self, points: int) -> None:
+        """Increases the player's total score by the given amount."""
+        self.total_score += points

@@ -1,1 +1,6 @@
-la clase entity explicame para que la creo para que sirve, porque la creamos, cual es su uso, porque ese nombre, y luego sus atributos y metodos explicame
+| Bit | Dirección | Significado |
+|---:|---|---|
+| 1 | Norte (arriba) | Hay pared arriba |
+| 2 | Este (derecha) | Hay pared a la derecha |
+| 4 | Sur (abajo) | Hay pared abajo |
+| 8 | Oeste (izquierda) | Hay pared a la izquierda |
