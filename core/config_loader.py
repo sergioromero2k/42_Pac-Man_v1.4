@@ -1,5 +1,7 @@
-from core.config import Config
 import json
+from core.config import Config
+from typing import Any
+
 
 DEFAULT_LIVES = 3
 DEFAULT_PACGUM_POINTS = 10
@@ -9,6 +11,13 @@ DEFAULT_SEED = 42
 DEFAULT_MAX_TIME = 90
 DEFAULT_LEVELS = [(20, 10)] * 10
 DEFAULT_HIGHSCORE_FILENAME = "data/highscore.json"
+
+MIN_LEVEL_SIZE = 3
+
+
+def _warn(message: str) -> None:
+    """Prints a configuration warning."""
+    print(f"[Warning] {message}")
 
 
 class ConfigLoader:

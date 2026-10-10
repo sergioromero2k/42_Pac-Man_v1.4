@@ -1,23 +1,23 @@
 # Decisiones de diseño - Pac-Man 42
 ---
 
-Se trabaja directamente sobre `main` (decisión consciente, ver DECISIONS.md).
-Decisión registrada en DECISIONS.md: ConfigLoader NUNCA lanza excepción,
-a diferencia de MazeLoader.
-Decisión en DECISIONS.md: flag `is_super` en vez de subclase SuperPacgum.
+## Config y ConfigLoader: dos clases separadas
+- `Config` solo guarda los 8 valores del juego (vidas, puntos, semilla, tiempo máximo, niveles, fichero de highscore). No sabe de dónde vienen.
+- `ConfigLoader` lee el archivo, quita los comentarios `#`, valida cada valor y construye un `Config`. No guarda estado.
+- **Motivo (responsabilidad única)**: el resto del juego depende solo de `Config` y no sabe que existe un **JSON**. Si cambia el formato del archivo, solo se toca `ConfigLoader`.
+- Los valores por defecto (`DEFAULT_*`) viven en `ConfigLoader`, no en `Config`: decidir qué hacer ante un archivo roto es lógica de lectura, no de datos.
+- Limitación conocida: `Config` es mutable. Mejora posible: `@dataclass(frozen=True)`.
 
-## Arquitectura general
-- `Entity` como clase base de `Player` y `Ghost` (comparten posición, dirección, sprite, referencia al maze, spwan, y los métodos `move()`/`respawn()`).
-- `Pacgum` NO hereda de `Entity`: no se mueve ni colisiona con paredes, así que heredar todo el paquete de **Entity** sería innecesario. Es una clase independiente con flag `is_super` (Opción B) en vez de una subclase `SuperPacgum` (Opción A).
-
-## Conveción de ejes (todo el proyecto)
-- Arriba/Norte = **y-1**, Abajo/Sur = **y+1** (como en pantalla, no como en matemáticas).
-- Fijada en `DIRECTION_DELTAS` (core/enums.py) y respetada también en `MazeLoader` al convertir el bitmask del generador externo.
-
-## Patrón "incializar internamente, no como parámetro"
-- Para datos que nunca tienen sentido pedido desde fuera al crear el objeto: `desired_direction` (Player), `target_position` (Ghost), `was_collected` (Pacgum). Siempre se inicializan a su valor por defecto dentro del propio `__init__`.
-
-## Movimiento por frame, no por tecla
-- `Player.handle_input()` solo guarda la dirección deseada.
-- Es `GameState` (en el game loop) quien llama a `move()` en cada frame, para un movimiento fluido y constante, como el `Pac-Man` original.
-gi
+## Errores: ConfigLoader no lanza excepciones, MazeLoader sí
+- Criterio: ¿existe un valor de reserva razonable cuando algo falla?
+- Config: sí. Ante un valor ausente o inválido se usa su valor por
+  defecto, se avisa con un mensaje claro y el juego continúa (lo pide el
+  subject, V.3).
+- Maze: no. El subject prohíbe escribir nuestro propio generador, así que
+  no se puede fabricar un laberinto de reserva. `MazeLoader` lanza
+  `MazeLoaderError`.
+- Lanzar una excepción no es lo mismo que mostrar un traceback: `GameEngine`
+  debe capturar `MazeLoaderError`, mostrar un mensaje legible y decidir si
+  salta el nivel o cierra el juego.
+- Validar bien el config no evita que el generador falle: son dos fuentes
+  de error independientes.

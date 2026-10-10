@@ -10,7 +10,8 @@
 NAME = pac_man
 
 PYTHON = python3
-ENTRY_POINT = main.py
+ENTRY_POINT = pac-man.py
+CONFIG = config.json
 
 GREEN        = \033[0;32m
 RED          = \033[0;31m
@@ -31,7 +32,7 @@ install:
 
 run:
 	@echo "$(GREEN)Running $(NAME)...$(RESET)"
-	$(PYTHON) $(ENTRY_POINT)
+	$(PYTHON) $(ENTRY_POINT) $(CONFIG)
 
 clean_venv:
 	@echo "$(RED)Removing virtual environment...$(RESET)"
