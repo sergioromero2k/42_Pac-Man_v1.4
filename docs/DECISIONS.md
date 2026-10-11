@@ -2,11 +2,11 @@
 ---
 
 ## Config y ConfigLoader: dos clases separadas
-- `Config` solo guarda los 8 valores del juego (vidas, puntos, semilla, tiempo máximo, niveles, fichero de highscore). No sabe de dónde vienen.
+- `Config` solo guarda los **8 valores del juego** (vidas, puntos, semilla, tiempo máximo, niveles, fichero de highscore). No sabe de dónde vienen.
 - `ConfigLoader` lee el archivo, quita los comentarios `#`, valida cada valor y construye un `Config`. No guarda estado.
 - **Motivo (responsabilidad única)**: el resto del juego depende solo de `Config` y no sabe que existe un **JSON**. Si cambia el formato del archivo, solo se toca `ConfigLoader`.
 - Los valores por defecto (`DEFAULT_*`) viven en `ConfigLoader`, no en `Config`: decidir qué hacer ante un archivo roto es lógica de lectura, no de datos.
-- Limitación conocida: `Config` es mutable. Mejora posible: `@dataclass(frozen=True)`.
+- `Config` es un `@dataclass(frozen=True)`: los valores validados no se pueden modificar tras crearse. Los datos que cambian durante la partida (como las vidas) viven en `Player`, no en `Config`.
 
 ## Errores: ConfigLoader no lanza excepciones, MazeLoader sí
 - Criterio: ¿existe un valor de reserva razonable cuando algo falla?
