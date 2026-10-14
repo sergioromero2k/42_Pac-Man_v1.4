@@ -1,0 +1,13 @@
+{
+    "lives": 3,
+    "pacgum_points": 10,
+    "super_pacgum_points": 50,
+    "ghost_points": 200,
+    "seed": 42,
+    "max_time": 90,
+    "levels": [
+        [20, 10], [20, 10], [22, 12], [22, 12], [24, 14],
+        [24, 14], [26, 16], [26, 16], [28, 18], [30, 20]
+    ],
+    "highscore_filename": "data/highscore.json"
+}
