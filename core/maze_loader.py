@@ -22,7 +22,7 @@ class MazeLoader:
         try:
             maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
         except Exception as e:
-            raise MazeLoaderError(f"Maze generation failed: {e}")
+            raise MazeLoaderError(f"Maze generation failed: {e}") from e
 
         original_maze = maze_gen.maze
         room_width, room_height = size
@@ -37,6 +37,8 @@ class MazeLoader:
         for ry in range(room_height):
             for rx in range(room_width):
                 bits = original_maze[ry][rx]
+                if bits == 15:
+                    continue
                 cx, cy = 2 * rx + 1, 2 * ry + 1
                 paths.add((cx, cy))
                 walls.discard((cx, cy))
@@ -45,5 +47,8 @@ class MazeLoader:
                         neighbor = (cx + dx, cy + dy)
                         paths.add(neighbor)
                         walls.discard(neighbor)
+        if not paths:
+            raise MazeLoaderError(
+                "The generator returned a maze without corridors.")
 
         return Maze(walls, paths, final_width, final_height)
