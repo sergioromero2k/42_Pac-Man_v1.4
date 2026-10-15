@@ -53,3 +53,159 @@ Tu cuadrado va a 160 píxeles por segundo. Compara los 2 métodos.
 | 30 | 5,33 px/frame → **160 px/s** | 90 px/s |
 | 60 | 2,67 px/frame → **160 px/s** | 180 px/s |
 | 144 | 1,11 px/frame → **160 px/s** | 432 px/s |
+
+## MazeLoader
+`MazeLoader` adapta el laberinto generado por la librería externa `mazegenerator` al formato utilizado por el proyecto mediante la clase `Maze`.
+El proceso consiste en:
+1. Generar el laberinto.
+2. Interpretar las conexiones mediante bits.
+3. Convertir las habitaciones y conexiones en coordenadas.
+4. Separar paredes (`walls`) y caminos (`paths`).
+5. Crear y devolver el objeto `Maze`.
+
+### 1. Seed (semilla)
+La `seed` es un número entero que controla la generación pseudoaleatoria del laberinto.
+```python
+maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
+```
+**Decisión:** permitir que la generación sea reproducible utilizando una semilla.
+- La misma semilla y los mismos parámetros permiten obtener el mismo laberinto si el generador es determinista.
+- Semillas diferentes pueden producir laberintos diferentes.
+- Es útil para depurar errores, realizar pruebas y reproducir laberintos concretos.
+La reproducibilidad exacta también puede depender de la versión de la librería y de su implementación.
+
+## 2. Representación de conexiones mediante bits
+La librería representa las conexiones de cada habitación mediante un número entero. Cada bit corresponde a una dirección.
+```python
+BIT_DELTAS = [
+    (1, 0, -1),   # Arriba
+    (2, 1, 0),    # Derecha
+    (4, 0, 1),    # Abajo
+    (8, -1, 0)    # Izquierda
+]
+```
+Cada tupla tiene el formato:
+
+`(bit, dx, dy)`
+
+- `bit`: identifica la dirección que se quiere comprobar.
+- `dx`: desplazamiento horizontal.
+- `dy`: desplazamiento vertical.
+
+| Dirección | Bit | Binario | dx | dy |
+|---|---:|---|---:|---:|
+| Arriba | 1 | `0001` | 0 | -1 |
+| Derecha | 2 | `0010` | 1 | 0 |
+| Abajo | 4 | `0100` | 0 | 1 |
+| Izquierda | 8 | `1000` | -1 | 0 |
+Se utilizan potencias de 2 para que cada dirección tenga un bit independiente. Esto permite combinar varias direcciones en un único entero sin perder información.
+
+### 3. Interpretación de las conexiones
+
+El código utiliza:
+
+```python
+if not (bits & bit):
+    neighbor = (cx + dx, cy + dy)
+    paths.add(neighbor)
+    walls.discard(neighbor)
+```
+La condición `not (bits & bit)` se cumple cuando el bit está desactivado.
+Según la convención asumida por este código:
+- Bit desactivado: se abre la conexión.
+- Bit activado: no se abre la conexión en ese bloque.
+Esta convención debe coincidir con la implementación de la librería externa y no debe darse por supuesta sin verificarla.
+
+## 4. Desplazamientos `dx` y `dy`
+Los bits identifican qué dirección se comprueba, mientras que `dx` y `dy` permiten calcular la coordenada vecina.
+```python
+neighbor = (cx + dx, cy + dy)
+```
+Por ejemplo, si la posición actual es `(3, 3)` y se comprueba la derecha:
+
+```python
+dx = 1
+dy = 0
+neighbor = (3 + 1, 3 + 0)  # (4, 3)
+```
+Los desplazamientos utilizados son:
+- Arriba: `(0, -1)`.
+- Derecha: `(1, 0)`.
+- Abajo: `(0, 1)`.
+- Izquierda: `(-1, 0)`.
+En esta representación, el eje vertical aumenta hacia abajo.
+
+## 5. Conversión de habitaciones a cuadrícula
+El **generador trabaja con habitaciones**, mientras que el proyecto utiliza una cuadrícula que también contiene las posiciones de las conexiones.
+Por ello, las dimensiones finales se calculan así:
+```python
+final_width = room_width * 2 + 1
+final_height = room_height * 2 + 1
+```
+Las coordenadas de cada habitación se calculan mediante:
+```python
+cx = 2 * rx + 1
+cy = 2 * ry + 1
+```
+
+Las habitaciones quedan en coordenadas impares y las posiciones intermedias representan las conexiones.
+Por ejemplo, una habitación situada en `(0, 0)` se coloca en `(1, 1)` en la cuadrícula final.
+
+## 6. Paredes y caminos
+Se utilizan dos conjuntos de coordenadas:
+
+```python
+walls = {(x, y) for x in range(final_width)
+         for y in range(final_height)}
+
+paths: set[tuple[int, int]] = set()
+```
+
+**Decisión:** inicializar todas las posiciones como paredes y eliminar las que deban ser transitables.
+Para cada habitación:
+```python
+paths.add((cx, cy))
+walls.discard((cx, cy))
+```
+
+Para cada conexión abierta:
+
+```python
+paths.add(neighbor)
+walls.discard(neighbor)
+```
+
+Así, las habitaciones y conexiones abiertas pasan a formar parte de `paths`, mientras que las posiciones restantes permanecen en `walls`.
+
+`discard()` se utiliza para eliminar una coordenada sin provocar un error si no existe en el conjunto.
+
+## 7. Gestión de errores
+
+```python
+class MazeLoaderError(Exception):
+    """Raised when the external maze generator fails."""
+```
+
+Se define una excepción personalizada para identificar errores de generación.
+
+```python
+try:
+    maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
+except Exception as e:
+    raise MazeLoaderError(f"Maze generation failed: {e}")
+```
+
+Esto permite presentar los errores del generador mediante una excepción propia del proyecto. El bloque `try` solo cubre la creación del generador, no las operaciones posteriores.
+
+## 8. Resultado final
+
+```python
+return Maze(walls, paths, final_width, final_height)
+```
+
+Se devuelve un objeto `Maze` con:
+- Las coordenadas de las paredes.
+- Las coordenadas de los caminos.
+- El ancho de la cuadrícula.
+- El alto de la cuadrícula.
+

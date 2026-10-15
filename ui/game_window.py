@@ -63,7 +63,3 @@ def run_window() -> None:
     """Creates the window and starts the arcade loop."""
     GameWindow()
     arcade.run()
-
-    
-
-
