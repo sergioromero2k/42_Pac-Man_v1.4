@@ -20,13 +20,13 @@ pip install arcade
 python -c "import arcade; print(arcade.__version__); w = arcade.Window(300, 200, 'test'); print('ok'); w.close()"
 ```
 
-### D-10 El movimiento se calcula con `delta_time`
+### El movimiento se calcula con `delta_time`
 - **Decisión:** `on_update(delta_time)` mueve con `velocidad * delta_time` (píxeles por segundo), no con píxeles fijos por frame.
 - **Motivo:** la velocidad no depende de la tasa de refresco (60 Hz o 144 Hz).
 - **Descartado:** mover por frame o por pulsación (lo que hacía el prototipo del
   compañero en `input_handler.py`).
 
-### D-11 Punto de entrada `pac-man.py` con exactamente un argumento
+### Punto de entrada `pac-man.py` con exactamente un argumento
 - **Decisión:** `python3 pac-man.py <config.json>`. Con otro número de argumentos muestra el uso y termina, sin traceback.
 - **Motivo:** lo exige el subject.
 
@@ -38,7 +38,6 @@ python -c "import arcade; print(arcade.__version__); w = arcade.Window(300, 200,
 | FPS | Veces por segundo que tu programa dibuja un frame | Normalmente igual a los Hz del monitor |
 | Frame | Una vuelta completa del bucle: actualizar y dibujar | A 60 FPS, un frame dura unos 0,0167 s |
 | delta_time | Los segundos que pasaron desde el frame anterior | A 60 FPS vale aproximadamente 0,0167 s |
-
 
 ### El game loop
 En cada frame, el motor hace 3 cosas, siempre en este orden:
@@ -54,6 +53,19 @@ Tu cuadrado va a 160 píxeles por segundo. Compara los 2 métodos.
 | 60 | 2,67 px/frame → **160 px/s** | 180 px/s |
 | 144 | 1,11 px/frame → **160 px/s** | 432 px/s |
 
+## Maze
+* `self` - Hace referencia al propio objeto.
+* `walls` - Conjunto de coordenadas de las paredes.
+* `paths` - Conjunto de coordenadas de los caminos transitables.
+* `maze_width` - Ancho del laberinto.
+* `maze_height` - Alto del laberinto.
+------------------------------------------------------------------------------------------------------------
+* `is_wall(pos)`: comprueba si una posición es una pared.
+* `is_path(pos)`: comprueba si una posición es transitable.
+* `get_center_position()`: calcula el centro según las dimensiones.
+* `get_corners()`: devuelve las cuatro esquinas.
+**La idea principal:** esta clase no crea ni resuelve el laberinto por sí misma. Almacena su estructura y proporciona métodos para consultar sus posiciones.
+
 ## MazeLoader
 `MazeLoader` adapta el laberinto generado por la librería externa `mazegenerator` al formato utilizado por el proyecto mediante la clase `Maze`.
 El proceso consiste en:
@@ -63,7 +75,7 @@ El proceso consiste en:
 4. Separar paredes (`walls`) y caminos (`paths`).
 5. Crear y devolver el objeto `Maze`.
 
-### 1. Seed (semilla)
+### Seed (semilla)
 La `seed` es un número entero que controla la generación pseudoaleatoria del laberinto.
 ```python
 maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
@@ -74,7 +86,7 @@ maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
 - Es útil para depurar errores, realizar pruebas y reproducir laberintos concretos.
 La reproducibilidad exacta también puede depender de la versión de la librería y de su implementación.
 
-## 2. Representación de conexiones mediante bits
+## Representación de conexiones mediante bits
 La librería representa las conexiones de cada habitación mediante un número entero. Cada bit corresponde a una dirección.
 ```python
 BIT_DELTAS = [
@@ -100,7 +112,7 @@ Cada tupla tiene el formato:
 | Izquierda | 8 | `1000` | -1 | 0 |
 Se utilizan potencias de 2 para que cada dirección tenga un bit independiente. Esto permite combinar varias direcciones en un único entero sin perder información.
 
-### 3. Interpretación de las conexiones
+### Interpretación de las conexiones
 
 El código utiliza:
 
@@ -116,7 +128,7 @@ Según la convención asumida por este código:
 - Bit activado: no se abre la conexión en ese bloque.
 Esta convención debe coincidir con la implementación de la librería externa y no debe darse por supuesta sin verificarla.
 
-## 4. Desplazamientos `dx` y `dy`
+## Desplazamientos `dx` y `dy`
 Los bits identifican qué dirección se comprueba, mientras que `dx` y `dy` permiten calcular la coordenada vecina.
 ```python
 neighbor = (cx + dx, cy + dy)
@@ -135,7 +147,7 @@ Los desplazamientos utilizados son:
 - Izquierda: `(-1, 0)`.
 En esta representación, el eje vertical aumenta hacia abajo.
 
-## 5. Conversión de habitaciones a cuadrícula
+## Conversión de habitaciones a cuadrícula
 El **generador trabaja con habitaciones**, mientras que el proyecto utiliza una cuadrícula que también contiene las posiciones de las conexiones.
 Por ello, las dimensiones finales se calculan así:
 ```python
@@ -151,7 +163,7 @@ cy = 2 * ry + 1
 Las habitaciones quedan en coordenadas impares y las posiciones intermedias representan las conexiones.
 Por ejemplo, una habitación situada en `(0, 0)` se coloca en `(1, 1)` en la cuadrícula final.
 
-## 6. Paredes y caminos
+## Paredes y caminos
 Se utilizan dos conjuntos de coordenadas:
 
 ```python
@@ -179,33 +191,9 @@ Así, las habitaciones y conexiones abiertas pasan a formar parte de `paths`, mi
 
 `discard()` se utiliza para eliminar una coordenada sin provocar un error si no existe en el conjunto.
 
-## 7. Gestión de errores
 
-```python
-class MazeLoaderError(Exception):
-    """Raised when the external maze generator fails."""
-```
-
-Se define una excepción personalizada para identificar errores de generación.
-
-```python
-try:
-    maze_gen = MazeGenerator(size=size, perfect=False, seed=seed)
-except Exception as e:
-    raise MazeLoaderError(f"Maze generation failed: {e}")
-```
-
-Esto permite presentar los errores del generador mediante una excepción propia del proyecto. El bloque `try` solo cubre la creación del generador, no las operaciones posteriores.
-
-## 8. Resultado final
-
-```python
-return Maze(walls, paths, final_width, final_height)
-```
-
-Se devuelve un objeto `Maze` con:
-- Las coordenadas de las paredes.
-- Las coordenadas de los caminos.
-- El ancho de la cuadrícula.
-- El alto de la cuadrícula.
-
+# Day04
+`Entity` **representa a cualquier entidad** que se mueve dentro de un laberinto, por ejemplo, el jugador o un enemigo. Permite moverla, consultar su posición, obtener su sprite y devolverla a su posición actual.
+* **Direction** es un `Enum` que representa las direcciones posible, como `UP`, `DONW`, `LEFT`, `RIGHT` y `NONE`.
+* **DIRECTION_DELTAS**: es un diccionario que indica cuánto cambia la posición al moverse en cada dirección.
+* **Maze**: es la clase que representa el laberinto.
