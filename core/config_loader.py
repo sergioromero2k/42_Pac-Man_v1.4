@@ -139,7 +139,7 @@ class ConfigLoader:
 
         if not isinstance(data, dict):
             _warn("The config root must be a JSON object. "
-                  "Using default values.")
+                  " Using default values.")
             return ConfigLoader._default_config()
 
         # Cree un alias, nombre mas corto...
