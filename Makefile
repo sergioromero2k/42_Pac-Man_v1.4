@@ -63,7 +63,7 @@ lint: install
 	@echo "$(YELLOW)Running Flake8....$(RESET)"
 	-$(PYTHON) -m flake8 . --exclude=venv,test_env,env,.venv
 	@echo "$(YELLOW)Running Mypy...$(RESET)"
-	-$(PYTHON) -m mypy .
+	-$(PYTHON) -m mypy . 
 
 lint-strict: install
 	@echo "$(RED)Running Flake8 strict....$(RESET)"

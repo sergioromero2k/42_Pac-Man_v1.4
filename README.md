@@ -1,7 +1,7 @@
 # 42_Pac-Man
+---
 
-
-```bash
+```
 core/
 ├── __init__.py
 ├── enums.py                  # Direction, ModoFantasma, EstadoJuego, TiposFlags
@@ -19,4 +19,5 @@ core/
     ├── player.py              # Player
     ├── ghost.py                # Ghost
     └── pacgum.py                # Pacgum
-``
+```
+Explicacion de subject_v1.5 - Hasta Mandatory part
