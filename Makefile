@@ -8,8 +8,9 @@
 ############################################################
 
 NAME = pac_man
-
 PYTHON = python3
+VENV_PYTHON = ./venv/bin/python
+
 ENTRY_POINT = pac-man.py
 CONFIG = config.json
 
@@ -18,7 +19,7 @@ RED          = \033[0;31m
 YELLOW       = \033[0;33m
 RESET        = \033[0m
 
-.PHONY: all venv install run clean_venv clean fclean debug re lint
+.PHONY: all install run clean_venv clean fclean debug re lint lint-strict
 
 all: run
 
@@ -33,7 +34,7 @@ install:
 
 run:
 	@echo "$(GREEN)Running $(NAME)...$(RESET)"
-	$(PYTHON) $(ENTRY_POINT) $(CONFIG)
+	$(VENV_PYTHON) $(ENTRY_POINT) $(CONFIG)
 
 clean_venv:
 	@echo "$(RED)Removing virtual environment...$(RESET)"
@@ -53,20 +54,20 @@ fclean: clean clean_venv
 
 debug:
 	@echo "$(YELLOW)Running in debug mode...$(RESET)"
-	$(PYTHON) -m pdb $(ENTRY_POINT)
+	$(VENV_PYTHON) -m pdb $(ENTRY_POINT) $(CONFIG)
 
-re: fclean run
+re: fclean install run
 
 # --- Linting (Code Quality) ----
 
-lint: install
+lint:
 	@echo "$(YELLOW)Running Flake8....$(RESET)"
-	-$(PYTHON) -m flake8 . --exclude=venv,test_env,env,.venv
+	-$(VENV_PYTHON) -m flake8 . --exclude=venv,test_env,env,.venv
 	@echo "$(YELLOW)Running Mypy...$(RESET)"
-	-$(PYTHON) -m mypy . 
+	-$(VENV_PYTHON) -m mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
-lint-strict: install
+lint-strict:
 	@echo "$(RED)Running Flake8 strict....$(RESET)"
-	-$(PYTHON) -m flake8 . --exclude=venv,test_env,env,.venv
+	-$(VENV_PYTHON) -m flake8 . --exclude=venv,test_env,env,.venv
 	@echo "$(RED)Running Mypy strict...$(RESET)"
-	$(ENV)/bin/mypy . --strict
+	-$(VENV_PYTHON) -m mypy . --strict
