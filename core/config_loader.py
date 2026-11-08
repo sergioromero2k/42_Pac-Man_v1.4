@@ -3,16 +3,25 @@ from core.config import Config
 from typing import Any
 
 
+# Defaults value
 DEFAULT_LIVES = 3
-DEFAULT_PACGUM_POINTS = 10
-DEFAULT_SUPER_PACGUM_POINTS = 50
-DEFAULT_GHOST_POINTS = 200
+DEFAULT_POINTS_PER_PACGUM = 10
+DEFAULT_POINTS_PER_SUPER_PACGUM = 50
+DEFAULT_POINTS_PER_GHOST = 200
 DEFAULT_SEED = 42
-DEFAULT_MAX_TIME = 90
+DEFAULT_LEVEL_MAX_TIME = 90
 DEFAULT_LEVELS = [(20, 10)] * 10
 DEFAULT_HIGHSCORE_FILENAME = "data/highscore.json"
 
-MIN_LEVEL_SIZE = 3
+# Max y Min
+MIN_LIVES, MAX_LIVES = 1, 99
+MIN_POINTS, MAX_POINTS = 0, 100_000
+MIN_SEED, MAX_SEED = 1, 2_147_483_647
+MIN_LEVEL_TIME, MAX_LEVEL_TIME = 1, 3_600
+MIN_LEVEL_SIZE, MAX_LEVEL_SIZE = 5, 50
+MAX_LEVELS = 100
+MAX_FILENAME_LENGTH = 255
+MAX_FILE_SIZE = 1_000_000
 
 
 def _warn(message: str) -> None:
@@ -21,26 +30,30 @@ def _warn(message: str) -> None:
 
 
 class ConfigLoader:
-    """Loads and validates the game configuration from a JSON file."""
+    """Loads and validates the game configuration from a JSON file.
+
+    It never raises: any problem is reported with a warning and replaced
+    by a safe default value, so a bad config file cannot stop the game.
+    """
 
     @staticmethod
     def _default_config() -> Config:
         """Returns a Config built entirely from safe default values."""
         return Config(
             lives=DEFAULT_LIVES,
-            pacgum_points=DEFAULT_PACGUM_POINTS,
-            super_pacgum_points=DEFAULT_SUPER_PACGUM_POINTS,
-            ghost_points=DEFAULT_GHOST_POINTS,
+            points_per_pacgum=DEFAULT_POINTS_PER_PACGUM,
+            points_per_super_pacgum=DEFAULT_POINTS_PER_SUPER_PACGUM,
+            points_per_ghost=DEFAULT_POINTS_PER_GHOST,
             seed=DEFAULT_SEED,
-            max_time=DEFAULT_MAX_TIME,
-            levels=DEFAULT_LEVELS,
+            level_max_time=DEFAULT_LEVEL_MAX_TIME,
+            levels=list(DEFAULT_LEVELS),
             highscore_filename=DEFAULT_HIGHSCORE_FILENAME
         )
 
     @staticmethod
     def _get_int(
         data: dict[str, Any], key: str, default: int,
-        minimum: int
+        minimum: int, maximum: int
     ) -> int:
         """Returns data[key] if it is an int >= minimum, else default."""
         if key not in data:
@@ -48,12 +61,12 @@ class ConfigLoader:
             return default
         value = data[key]
         if isinstance(value, bool) or not isinstance(value, int):
-            _warn(f"'{key}' must be an integer, got {value!r}. "
+            _warn(f"'{key}' must be an integer, got {value!r}. "  # 'hola'
                   f"Using default: {default}")
             return default
-        if value < minimum:
-            _warn(f"'{key}' must be >= {minimum}, got {value}. "
-                  f"Using default: {default}")
+        if not minimum <= value <= maximum:
+            _warn(f"'{key}' must be between {minimum} and {maximum}, "
+                  f"got {value}. Using default: {default}")
             return default
         return value
 
@@ -64,8 +77,14 @@ class ConfigLoader:
             _warn(f"Missing key '{key}'. Using default: {default}")
             return default
         value = data[key]
-        if not isinstance(value, str) or not value.strip():
-            _warn(f"'{key}' must be a non-empty string, got {value!r}. "
+        if (
+            not isinstance(value, str)
+            or not value.strip()
+            or len(value) > MAX_FILENAME_LENGTH
+            or "\0" in value
+        ):
+            _warn(f"'{key}' must be a non-empty file name of at most "
+                  f"{MAX_FILENAME_LENGTH} characters. "
                   f"Using default: {default}")
             return default
         return value
